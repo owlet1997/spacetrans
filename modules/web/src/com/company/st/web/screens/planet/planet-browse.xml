@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        xmlns:c="http://schemas.haulmont.com/cuba/screen/jpql_condition.xsd"
+        caption="msg://planetBrowse.caption"
+        focusComponent="planetsTable"
+        messagesPack="com.company.st.web.screens.planet">
+    <data readOnly="true">
+        <collection id="planetsDc"
+                    class="com.company.st.entity.spacebody.Planet">
+            <view extends="_local">
+                <property name="atmosphere" view="_minimal"/>
+                <property name="picture" view="_minimal"/>
+            </view>
+            <loader id="planetsDl">
+                <query>
+                    <![CDATA[select e from st_Planet e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <dialogMode height="auto"
+                width="auto"/>
+    <layout expand="planetHBox">
+        <filter id="filter"
+                applyTo="planetsTable"
+                dataLoader="planetsDl">
+            <properties include=".*"/>
+        </filter>
+        <hbox id="planetHBox" spacing="true">
+            <groupTable id="planetsTable"
+                            width="100%"
+                            dataContainer="planetsDc"
+                            presentations="true">
+                <actions>
+                    <action id="create" type="create"/>
+                    <action id="edit" type="edit"/>
+                    <action id="remove" type="remove"/>
+                </actions>
+                <columns>
+                    <column id="name"/>
+                    <column id="mass"/>
+                    <column id="semiMajorAxes"/>
+                    <column id="orbitalPeriod"/>
+                    <column id="rotationPeriod"/>
+                    <column id="atmosphere"/>
+                    <column id="rings"/>
+                </columns>
+                <rowsCount/>
+                <buttonsPanel id="buttonsPanel"
+                              alwaysVisible="true">
+                    <button id="createBtn" action="planetsTable.create"/>
+                    <button id="editBtn" action="planetsTable.edit"/>
+                    <button id="removeBtn" action="planetsTable.remove"/>
+                </buttonsPanel>
+            </groupTable>
+            <hbox id="planetPicture" spacing="true" caption="Planet picture">
+                <label id="planetLabel"></label>
+                <image id="planetImage" height="500"></image>
+            </hbox>
+        </hbox>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

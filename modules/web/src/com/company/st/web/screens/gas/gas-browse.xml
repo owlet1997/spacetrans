@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        xmlns:c="http://schemas.haulmont.com/cuba/screen/jpql_condition.xsd"
+        caption="msg://gasBrowse.caption"
+        focusComponent="gasesTable"
+        messagesPack="com.company.st.web.screens.gas">
+    <data readOnly="true">
+        <collection id="gasesDc"
+                    class="com.company.st.entity.atmosphere.Gas">
+            <view extends="_local"/>
+            <loader id="gasesDl">
+                <query>
+                    <![CDATA[select e from st_Gas e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="gasesTable"
+            spacing="true">
+        <filter id="filter"
+                applyTo="gasesTable"
+                dataLoader="gasesDl">
+            <properties include=".*"/>
+        </filter>
+        <groupTable id="gasesTable"
+                    width="100%"
+                    dataContainer="gasesDc">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <columns>
+                <column id="name"/>
+            </columns>
+            <rowsCount/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn" action="gasesTable.create"/>
+                <button id="editBtn" action="gasesTable.edit"/>
+                <button id="removeBtn" action="gasesTable.remove"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://moonEdit.caption"
+        focusComponent="form"
+        messagesPack="com.company.st.web.screens.moon">
+    <data>
+        <instance id="moonDc"
+                  class="com.company.st.entity.spacebody.Moon">
+            <view extends="_local">
+                <property name="atmosphere" view="_minimal"/>
+                <property name="planet" view="_minimal">
+                    <property name="name"/>
+                </property>
+                <property name="picture" view="_minimal"/>
+            </view>
+            <loader/>
+            <instance id="atmosphereDc" property="atmosphere"/>
+        </instance>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="editActions" spacing="true">
+        <form id="form" dataContainer="moonDc">
+            <column width="350px">
+                <textField id="nameField" property="name"/>
+                <textField id="massField" property="mass"/>
+                <upload id="pictureField" fileStoragePutMode="IMMEDIATE" property="picture" showFileName="true"/>
+                <pickerField id="atmosphereField" property="atmosphere">
+                    <actions>
+                        <action id="open_composition" type="picker_open_composition"/>
+                        <action id="clear" type="picker_clear"/>
+                    </actions>
+                </pickerField>
+                <pickerField id="planetField" property="planet">
+                    <actions>
+                        <action id="lookup" type="picker_lookup"/>
+                        <action id="clear" type="picker_clear"/>
+                    </actions>
+                </pickerField>
+            </column>
+        </form>
+        <hbox id="editActions" spacing="true">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

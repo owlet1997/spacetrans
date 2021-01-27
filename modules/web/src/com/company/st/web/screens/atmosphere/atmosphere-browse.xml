@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        xmlns:c="http://schemas.haulmont.com/cuba/screen/jpql_condition.xsd"
+        caption="msg://atmosphereBrowse.caption"
+        focusComponent="atmospheresTable"
+        messagesPack="com.company.st.web.screens.atmosphere">
+    <data readOnly="true">
+        <collection id="atmospheresDc"
+                    class="com.company.st.entity.atmosphere.Atmosphere">
+            <view extends="_local">
+                <property name="gases" view="_minimal">
+                    <property name="gas" view="_minimal"/>
+                </property>
+            </view>
+            <loader id="atmospheresDl">
+                <query>
+                    <![CDATA[select e from st_Atmosphere e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="atmospheresTable"
+            spacing="true">
+        <filter id="filter"
+                applyTo="atmospheresTable"
+                dataLoader="atmospheresDl">
+            <properties include=".*"/>
+        </filter>
+        <groupTable id="atmospheresTable"
+                    width="100%"
+                    dataContainer="atmospheresDc">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <columns>
+                <column id="description"/>
+                <column id="pressure"/>
+            </columns>
+            <rowsCount/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn" action="atmospheresTable.create"/>
+                <button id="editBtn" action="atmospheresTable.edit"/>
+                <button id="removeBtn" action="atmospheresTable.remove"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

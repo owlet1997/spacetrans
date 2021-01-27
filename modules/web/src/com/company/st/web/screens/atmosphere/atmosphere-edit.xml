@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://atmosphereEdit.caption"
+        focusComponent="form"
+        messagesPack="com.company.st.web.screens.atmosphere">
+    <data>
+        <instance id="atmosphereDc"
+                  class="com.company.st.entity.atmosphere.Atmosphere">
+            <view extends="_local">
+                <property name="gases" view="_minimal">
+                    <property name="gas" view="_minimal"/>
+                </property>
+            </view>
+            <loader/>
+            <collection id="gasesDc" property="gases"/>
+        </instance>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="editActions" spacing="true">
+        <form id="form" dataContainer="atmosphereDc">
+            <column width="350px">
+                <textField id="descriptionField" property="description"/>
+                <textField id="pressureField" property="pressure"/>
+            </column>
+        </form>
+        <groupBox id="gasesBox" caption="msg://com.company.st.entity.atmosphere/Atmosphere.gases">
+            <table id="gasesTable" dataContainer="gasesDc" width="100%" height="200px">
+                <actions>
+                    <action id="create" type="create"/>
+                    <action id="edit" type="edit"/>
+                    <action id="remove" type="remove"/>
+                </actions>
+                <columns>
+                    <column id="volume"/>
+                    <column id="gas"/>
+                </columns>
+                <buttonsPanel>
+                    <button action="gasesTable.create"/>
+                    <button action="gasesTable.edit"/>
+                    <button action="gasesTable.remove"/>
+                </buttonsPanel>
+            </table>
+        </groupBox>
+        <hbox id="editActions" spacing="true">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

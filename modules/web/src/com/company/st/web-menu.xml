@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<menu-config xmlns="http://schemas.haulmont.com/cuba/menu.xsd">
+    <menu id="application-st" insertBefore="administration" caption="mainMsg://menu_config.application-st">
+        <item screen="st_Planet.browse" caption="mainMsg://menu_config.st_Planet.browse"/>
+        <item screen="st_AtmosphericGas.browse" caption="mainMsg://menu_config.st_AtmosphericGas.browse"/>
+        <item screen="st_Atmosphere.browse" caption="mainMsg://menu_config.st_Atmosphere.browse"/>
+        <item screen="st_Gas.browse" caption="mainMsg://menu_config.st_Gas.browse"/>
+        <item screen="st_Moon.browse" caption="mainMsg://menu_config.st_Moon.browse"/>
+    </menu>
+</menu-config>
