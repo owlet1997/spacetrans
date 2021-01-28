@@ -55,23 +55,23 @@ public class Planet extends AstronomicalBody {
         return rotationPeriod;
     }
 
-    public void setRotationPeriod(String rotationPeriod) throws ParseException {
-        this.rotationPeriod = Double.valueOf(rotationPeriod);
+    public void setRotationPeriod(Double rotationPeriod)  {
+        this.rotationPeriod = rotationPeriod;
     }
 
     public Double getOrbitalPeriod() {
         return orbitalPeriod;
     }
 
-    public void setOrbitalPeriod(String orbitalPeriod) throws ParseException {
-        this.orbitalPeriod = Double.valueOf(orbitalPeriod);
+    public void setOrbitalPeriod(Double orbitalPeriod) {
+        this.orbitalPeriod = orbitalPeriod;
     }
 
     public Double getSemiMajorAxes() {
         return semiMajorAxes;
     }
 
-    public void setSemiMajorAxes(String semiMajorAxes) throws ParseException {
-        this.semiMajorAxes = Double.valueOf(semiMajorAxes);
+    public void setSemiMajorAxes(Double semiMajorAxes){
+        this.semiMajorAxes = semiMajorAxes;
     }
 }

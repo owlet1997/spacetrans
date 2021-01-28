@@ -51,7 +51,6 @@
                     <button id="createBtn" action="planetsTable.create"/>
                     <button id="editBtn" action="planetsTable.edit"/>
                     <button id="removeBtn" action="planetsTable.remove"/>
-                    <button id="uploadButton" caption="msg://upload"/>
                 </buttonsPanel>
 
             </groupTable>

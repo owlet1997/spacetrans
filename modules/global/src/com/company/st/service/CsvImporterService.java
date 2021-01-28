@@ -6,5 +6,5 @@ import java.io.FileDescriptor;
 public interface CsvImporterService {
     String NAME = "st_CsvImporterService";
 
-    String updatePlanetsFromFile(String filePath);
+    String updatePlanetsFromFile(File file);
 }

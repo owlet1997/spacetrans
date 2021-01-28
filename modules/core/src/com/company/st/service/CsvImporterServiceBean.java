@@ -22,9 +22,9 @@ public class CsvImporterServiceBean implements CsvImporterService {
     private DataManager dataManager;
 
     @Override
-    public String updatePlanetsFromFile(String filePath) {
+    public String updatePlanetsFromFile(File file) {
         CsvParserUtil parser = new CsvParserUtil();
-        File file = new File(filePath);
+
         try {
             List<String[]> list = parser.checkValidFile(file);
             if (list.isEmpty()){
@@ -60,13 +60,13 @@ public class CsvImporterServiceBean implements CsvImporterService {
         }
     }
 
-    public Planet createPlanet(String[] arr) throws ParseException {
+    public Planet createPlanet(String[] arr) {
         Planet newPlanet = dataManager.create(Planet.class);
         newPlanet.setName(arr[0]);
-        newPlanet.setMass(arr[1]);
-        newPlanet.setSemiMajorAxes(arr[2]);
-        newPlanet.setOrbitalPeriod(arr[3]);
-        newPlanet.setRotationPeriod(arr[4]);
+        newPlanet.setMass(Double.valueOf(arr[1]));
+        newPlanet.setSemiMajorAxes(Double.valueOf(arr[2]));
+        newPlanet.setOrbitalPeriod(Double.valueOf(arr[3]));
+        newPlanet.setRotationPeriod(Double.valueOf(arr[4]));
         boolean rings = arr[5].equals("yes");
         newPlanet.setRings(rings);
         log.info("Planet " + newPlanet.getName() + " added!");
@@ -74,12 +74,12 @@ public class CsvImporterServiceBean implements CsvImporterService {
         return newPlanet;
     }
 
-    public void updatePlanet(String[] arr, Planet planet) throws ParseException {
+    public void updatePlanet(String[] arr, Planet planet) {
         planet.setName(arr[0]);
-        planet.setMass(arr[1]);
-        planet.setSemiMajorAxes(arr[2]);
-        planet.setOrbitalPeriod(arr[3]);
-        planet.setRotationPeriod(arr[4]);
+        planet.setMass(Double.valueOf(arr[1]));
+        planet.setSemiMajorAxes(Double.valueOf(arr[2]));
+        planet.setOrbitalPeriod(Double.valueOf(arr[3]));
+        planet.setRotationPeriod(Double.valueOf(arr[4]));
         boolean rings = arr[5].equals("yes");
         planet.setRings(rings);
         log.info("Planet " + planet.getName() + " updated!");
