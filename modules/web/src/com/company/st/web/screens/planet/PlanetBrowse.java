@@ -73,12 +73,13 @@ public class PlanetBrowse extends StandardLookup<Planet> {
     @Subscribe("uploadFile")
     public void onUploadFileFileUploadSucceed(FileUploadField.FileUploadSucceedEvent event) {
         File file = fileUploadingAPI.getFile(uploadFile.getFileId());
-        if (file != null) {
-            notifications.create()
-                    .withCaption("File is uploaded to temporary storage at " + file.getAbsolutePath())
-                    .show();
-        }
-        csvImporterService.updatePlanetsFromFile(file);
+        String absolutePath = file.getAbsolutePath();
+        log.info(absolutePath);
+
+        String message = csvImporterService.updatePlanetsFromFile(absolutePath);
+        notifications.create()
+                .withCaption(message)
+                .show();
 
     }
 

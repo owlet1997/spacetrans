@@ -1,6 +1,5 @@
 package com.company.st.core.utils;
 
-import com.haulmont.cuba.core.entity.FileDescriptor;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import org.slf4j.Logger;
@@ -9,11 +8,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class CsvParserUtil {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(CsvParserUtil.class);
+
     private final String[] columns =
                 {"name","mass","semiMajorAxes","orbitalPeriod","rotationPeriod","rings"};
 
@@ -33,12 +34,13 @@ public class CsvParserUtil {
             r.remove(0);
             return r;
         } else {
-            return null;
+            log.error("File incorrect!");
+            return new ArrayList<>();
         }
+
+
     }
 
 
-        private List<String[]> getStringsFromFile(){
-            return null;
-        }
+
 }

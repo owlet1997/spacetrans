@@ -36,8 +36,8 @@ public class AstronomicalBody extends StandardEntity {
         return mass;
     }
 
-    public void setMass(Double mass) {
-        this.mass = mass;
+    public void setMass(String mass) {
+        this.mass = Double.valueOf(mass);
     }
 
     public String getName() {
