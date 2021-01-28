@@ -4,7 +4,6 @@ buildscript {
     repositories {
         maven {
             url 'https://dl.bintray.com/cuba-platform/main'
-
         }
         jcenter()
 
@@ -91,6 +90,8 @@ configure(coreModule) {
         compileOnly(servletApi)
         jdbc(postgres)
         testRuntime(postgres)
+        compile('com.opencsv:opencsv:5.3')
+
     }
 
     task cleanConf(description: 'Cleans up conf directory', type: Delete) {

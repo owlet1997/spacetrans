@@ -1,0 +1,9 @@
+index,name,mass,semiMajorAxes,orbitalPeriod,rotationPeriod,rings
+1,Mercury,0.06,0.39,0.24,58.65,no
+2,Venus,0.81,0.72,0.62,−243.02,no
+3,Earth,1.00,1.00,1.00,1.00,no
+4,Mars,0.11,1.52,1.88,01.03,no
+5,Jupiter,317.83,5.20,11.86,0.41,yes
+6,Saturn,95.16,9.54,29.45,0.44,yes
+7,Uranus,14.54,19.19,84.02,−0.72,yes
+8,Neptune,17.15,30.07,164.79,0.67,yes
