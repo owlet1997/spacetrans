@@ -1,0 +1,12 @@
+alter table ST_WAY_BILL add constraint FK_ST_WAY_BILL_ON_CREATOR foreign key (CREATOR_ID) references SEC_USER(ID);
+alter table ST_WAY_BILL add constraint FK_ST_WAY_BILL_ON_SHIPPER foreign key (SHIPPER_ID) references ST_CUSTOMER(ID);
+alter table ST_WAY_BILL add constraint FK_ST_WAY_BILL_ON_CONSIGNEE foreign key (CONSIGNEE_ID) references ST_CUSTOMER(ID);
+alter table ST_WAY_BILL add constraint FK_ST_WAY_BILL_ON_DEPARTURE_PORT foreign key (DEPARTURE_PORT_ID) references ST_SPACE_PORT(ID);
+alter table ST_WAY_BILL add constraint FK_ST_WAY_BILL_ON_DESTINATION_PORT foreign key (DESTINATION_PORT_ID) references ST_SPACE_PORT(ID);
+alter table ST_WAY_BILL add constraint FK_ST_WAY_BILL_ON_CARRIER foreign key (CARRIER_ID) references ST_CARRIER(ID);
+create index IDX_ST_WAY_BILL_ON_CREATOR on ST_WAY_BILL (CREATOR_ID);
+create index IDX_ST_WAY_BILL_ON_SHIPPER on ST_WAY_BILL (SHIPPER_ID);
+create index IDX_ST_WAY_BILL_ON_CONSIGNEE on ST_WAY_BILL (CONSIGNEE_ID);
+create index IDX_ST_WAY_BILL_ON_DEPARTURE_PORT on ST_WAY_BILL (DEPARTURE_PORT_ID);
+create index IDX_ST_WAY_BILL_ON_DESTINATION_PORT on ST_WAY_BILL (DESTINATION_PORT_ID);
+create index IDX_ST_WAY_BILL_ON_CARRIER on ST_WAY_BILL (CARRIER_ID);

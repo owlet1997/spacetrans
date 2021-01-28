@@ -1,19 +1,19 @@
 package com.company.st.entity.customer;
 
-import com.haulmont.cuba.core.entity.StandardEntity;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Table(name = "ST_COMPANY")
 @Entity(name = "st_Company")
-@DiscriminatorColumn(name = "DTYPE", discriminatorType = DiscriminatorType.STRING)
-@Inheritance(strategy = InheritanceType.JOINED)
-public class Company extends StandardEntity {
+@PrimaryKeyJoinColumn(name = "ID", referencedColumnName = "ID")
+public class Company extends Customer {
     private static final long serialVersionUID = -8694305012431362271L;
 
     @NotNull
-    @Column(name = "REGISTRATION_ID", nullable = false, unique = true, length = 100)
+    @Column(name = "REGISTRATION_ID", nullable = false, length = 100)
     private String registrationId;
 
     @NotNull

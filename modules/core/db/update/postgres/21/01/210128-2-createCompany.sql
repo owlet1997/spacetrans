@@ -1,0 +1,1 @@
+create unique index IDX_ST_COMPANY_UK_REGISTRATION_ID on ST_COMPANY (REGISTRATION_ID) where DELETE_TS is null ;

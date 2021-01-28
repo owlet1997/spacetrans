@@ -6,5 +6,7 @@
         <item screen="st_Atmosphere.browse" caption="mainMsg://menu_config.st_Atmosphere.browse"/>
         <item screen="st_Gas.browse" caption="mainMsg://menu_config.st_Gas.browse"/>
         <item screen="st_Moon.browse" caption="mainMsg://menu_config.st_Moon.browse"/>
+        <item screen="st_Individual.browse" caption="mainMsg://menu_config.st_Individual.browse"/>
+        <item screen="st_Company.browse" caption="mainMsg://menu_config.st_Company.browse"/>
     </menu>
 </menu-config>

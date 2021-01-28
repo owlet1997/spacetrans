@@ -10,7 +10,6 @@
         <class>com.company.st.entity.spacebody.AstronomicalBody</class>
         <class>com.company.st.entity.customer.Customer</class>
         <class>com.company.st.entity.customer.Individual</class>
-        <class>com.company.st.entity.customer.Company</class>
         <class>com.company.st.entity.customer.Discounts</class>
         <class>com.company.st.entity.spaceport.Dimensions</class>
         <class>com.company.st.entity.spaceport.Coordinates</class>
@@ -18,5 +17,6 @@
         <class>com.company.st.entity.spaceport.Carrier</class>
         <class>com.company.st.entity.waybill.WayBillItem</class>
         <class>com.company.st.entity.waybill.WayBill</class>
+        <class>com.company.st.entity.customer.Company</class>
     </persistence-unit>
 </persistence>

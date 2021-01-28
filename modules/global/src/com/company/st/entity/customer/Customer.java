@@ -3,15 +3,16 @@ package com.company.st.entity.customer;
 import com.haulmont.chile.core.annotations.NamePattern;
 import com.haulmont.cuba.core.entity.StandardEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
+@DiscriminatorValue("C")
 @Table(name = "ST_CUSTOMER")
 @Entity(name = "st_Customer")
 @NamePattern("%s|name")
+@DiscriminatorColumn(name = "DTYPE", discriminatorType = DiscriminatorType.STRING)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Customer extends StandardEntity {
     private static final long serialVersionUID = -803299922283881761L;
 

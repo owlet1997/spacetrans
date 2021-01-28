@@ -1,0 +1,1 @@
+drop table if exists ST_COMPANY__U32606 cascade ;
