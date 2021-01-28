@@ -61,20 +61,20 @@ public class CsvImporterServiceBean implements CsvImporterService {
     }
 
     public Planet createPlanet(String[] arr) {
-        Planet newPlanet = dataManager.create(Planet.class);
-        newPlanet.setName(arr[0]);
-        newPlanet.setMass(Double.valueOf(arr[1]));
-        newPlanet.setSemiMajorAxes(Double.valueOf(arr[2]));
-        newPlanet.setOrbitalPeriod(Double.valueOf(arr[3]));
-        newPlanet.setRotationPeriod(Double.valueOf(arr[4]));
-        boolean rings = arr[5].equals("yes");
-        newPlanet.setRings(rings);
-        log.info("Planet " + newPlanet.getName() + " added!");
-        log.info(newPlanet.toString());
-        return newPlanet;
+        Planet planet = dataManager.create(Planet.class);
+        setPlanetTraits(arr, planet);
+        log.info("Planet " + planet.getName() + " added!");
+        log.info(planet.toString());
+        return planet;
     }
 
     public void updatePlanet(String[] arr, Planet planet) {
+        setPlanetTraits(arr, planet);
+        log.info("Planet " + planet.getName() + " updated!");
+        log.info(planet.toString());
+    }
+
+    private void setPlanetTraits(String[] arr, Planet planet){
         planet.setName(arr[0]);
         planet.setMass(Double.valueOf(arr[1]));
         planet.setSemiMajorAxes(Double.valueOf(arr[2]));
@@ -82,7 +82,5 @@ public class CsvImporterServiceBean implements CsvImporterService {
         planet.setRotationPeriod(Double.valueOf(arr[4]));
         boolean rings = arr[5].equals("yes");
         planet.setRings(rings);
-        log.info("Planet " + planet.getName() + " updated!");
-        log.info(planet.toString());
     }
 }
