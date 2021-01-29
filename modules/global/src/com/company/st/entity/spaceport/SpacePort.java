@@ -6,7 +6,6 @@ import com.haulmont.chile.core.annotations.NamePattern;
 import com.haulmont.cuba.core.entity.StandardEntity;
 import com.haulmont.cuba.core.entity.annotation.EmbeddedParameters;
 import com.haulmont.cuba.core.entity.annotation.Listeners;
-import com.haulmont.cuba.core.entity.annotation.PublishEntityChangedEvents;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -40,7 +39,7 @@ public class SpacePort extends StandardEntity {
     private Coordinates coordinates;
 
     @Column(name = "IS_DEFAULT")
-    private Boolean isDefault;
+    private Boolean isDefault = false;
 
     @JoinTable(name = "ST_CARRIER_SPACE_PORT_LINK",
             joinColumns = @JoinColumn(name = "SPACE_PORT_ID"),

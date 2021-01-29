@@ -12,5 +12,6 @@
         <item screen="st_Discounts.browse" caption="mainMsg://menu_config.st_Discounts.browse"/>
         <item screen="st_WayBill.browse" caption="mainMsg://menu_config.st_WayBill.browse"/>
         <item screen="st_WayBillItem.browse" caption="mainMsg://menu_config.st_WayBillItem.browse"/>
+        <item screen="st_Customer.browse" caption="mainMsg://menu_config.st_Customer.browse"/>
     </menu>
 </menu-config>
