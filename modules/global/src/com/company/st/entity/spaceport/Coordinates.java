@@ -1,6 +1,7 @@
 package com.company.st.entity.spaceport;
 
 import com.haulmont.chile.core.annotations.MetaClass;
+import com.haulmont.chile.core.annotations.NumberFormat;
 import com.haulmont.cuba.core.entity.EmbeddableEntity;
 
 import javax.persistence.Column;
@@ -14,10 +15,12 @@ public class Coordinates extends EmbeddableEntity {
 
     @NotNull
     @Column(name = "LATITUDE", nullable = false)
+    @NumberFormat(pattern = "#.######")
     private Double latitude;
 
     @Column(name = "LONGTITUDE", nullable = false)
     @NotNull
+    @NumberFormat(pattern = "#.######")
     private Double longtitude;
 
     public Double getLongtitude() {

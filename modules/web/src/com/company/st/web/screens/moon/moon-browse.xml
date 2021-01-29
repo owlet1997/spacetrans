@@ -54,7 +54,8 @@
                 </buttonsPanel>
             </groupTable>
             <hbox id="moonPicture" spacing="true" align="TOP_RIGHT" caption="Moon picture">
-            <image id="moonImage" height="500"></image>
+            <image id="moonImage" height="500px" scaleMode="FILL"></image>
+            <label id="moonLabel"></label>
             </hbox>
 
         </hbox>

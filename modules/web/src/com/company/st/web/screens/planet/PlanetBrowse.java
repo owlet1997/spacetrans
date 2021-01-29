@@ -75,6 +75,7 @@ public class PlanetBrowse extends StandardLookup<Planet> {
                 .show();
 
         uploadFile.clear();
+        planetsTable.refresh();
 
     }
 

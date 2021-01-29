@@ -8,5 +8,9 @@
         <item screen="st_Moon.browse" caption="mainMsg://menu_config.st_Moon.browse"/>
         <item screen="st_Individual.browse" caption="mainMsg://menu_config.st_Individual.browse"/>
         <item screen="st_Company.browse" caption="mainMsg://menu_config.st_Company.browse"/>
+        <item screen="st_SpacePort.browse" caption="mainMsg://menu_config.st_SpacePort.browse"/>
+        <item screen="st_Discounts.browse" caption="mainMsg://menu_config.st_Discounts.browse"/>
+        <item screen="st_WayBill.browse" caption="mainMsg://menu_config.st_WayBill.browse"/>
+        <item screen="st_WayBillItem.browse" caption="mainMsg://menu_config.st_WayBillItem.browse"/>
     </menu>
 </menu-config>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        xmlns:c="http://schemas.haulmont.com/cuba/screen/jpql_condition.xsd"
+        caption="msg://spacePortBrowse.caption"
+        focusComponent="spacePortsTable"
+        messagesPack="com.company.st.web.screens.spaceport">
+    <data readOnly="true">
+        <collection id="spacePortsDc"
+                    class="com.company.st.entity.spaceport.SpacePort">
+            <view extends="_local">
+                <property name="planet" view="_minimal">
+                    <property name="name"/>
+                </property>
+                <property name="moon" view="_minimal"/>
+                <property name="coordinates" view="_minimal">
+                    <property name="latitude"/>
+                    <property name="longtitude"/>
+                </property>
+                <property name="carriers" view="_minimal"/>
+            </view>
+            <loader id="spacePortsDl">
+                <query>
+                    <![CDATA[select e from st_SpacePort e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="spacePortsTable"
+            spacing="true">
+        <filter id="filter"
+                applyTo="spacePortsTable"
+                dataLoader="spacePortsDl">
+            <properties include=".*"/>
+        </filter>
+        <groupTable id="spacePortsTable"
+                    width="100%"
+                    dataContainer="spacePortsDc">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <columns>
+                <column id="name"/>
+                <column id="planet"/>
+                <column id="moon"/>
+                <column id="coordinates.latitude"/>
+                <column id="coordinates.longtitude"/>
+                <column id="isDefault"/>
+            </columns>
+            <rowsCount/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn" action="spacePortsTable.create"/>
+                <button id="editBtn" action="spacePortsTable.edit"/>
+                <button id="removeBtn" action="spacePortsTable.remove"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

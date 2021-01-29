@@ -60,7 +60,7 @@
 
             <hbox id="planetPicture" spacing="true" caption="Planet picture">
                 <label id="planetLabel"></label>
-                <image id="planetImage"></image>
+                <image id="planetImage" width="500px" scaleMode="FILL"></image>
             </hbox>
         </hbox>
         <hbox id="lookupActions" spacing="true" visible="false">

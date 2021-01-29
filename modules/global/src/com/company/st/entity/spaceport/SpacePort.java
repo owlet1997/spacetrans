@@ -5,11 +5,14 @@ import com.company.st.entity.spacebody.Planet;
 import com.haulmont.chile.core.annotations.NamePattern;
 import com.haulmont.cuba.core.entity.StandardEntity;
 import com.haulmont.cuba.core.entity.annotation.EmbeddedParameters;
+import com.haulmont.cuba.core.entity.annotation.Listeners;
+import com.haulmont.cuba.core.entity.annotation.PublishEntityChangedEvents;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@Listeners("st_SpacePortChangedListener")
 @Table(name = "ST_SPACE_PORT")
 @Entity(name = "st_SpacePort")
 @NamePattern("%s|name")
