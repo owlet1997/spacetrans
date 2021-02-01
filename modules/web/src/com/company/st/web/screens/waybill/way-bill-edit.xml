@@ -35,6 +35,20 @@
                 </query>
             </loader>
         </collection>
+        <collection id="planetsDc" class="com.company.st.entity.spacebody.Planet">
+            <loader dynamicAttributes="true">
+                <query>
+                    <![CDATA[select e from st_Planet e]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="moonsDc" class="com.company.st.entity.spacebody.Moon">
+            <loader dynamicAttributes="true">
+                <query>
+                    <![CDATA[select e from st_Moon e]]>
+                </query>
+            </loader>
+        </collection>
     </data>
     <dialogMode height="600"
                 width="800"/>
@@ -72,7 +86,36 @@
                         <action id="clear" type="picker_clear"/>
                     </actions>
                 </pickerField>
+                <label value="msg://chooseDeparturePlace"/>
+                <checkBox id="checkBoxMoonDeparture" caption="msg://moon"/>
+                <pickerField id="planetDeparturePicker" metaClass="st_Planet" caption="msg://departure">
+                    <actions>
+                        <action id="lookup" type="picker_lookup"/>
+                        <action id="clear" type="picker_clear"/>
+                    </actions>
+                </pickerField>
+                <pickerField id="moonDeparturePicker" metaClass="st_Moon" caption="msg://departure" visible="false">
+                    <actions>
+                        <action id="lookup" type="picker_lookup"/>
+                        <action id="clear" type="picker_clear"/>
+                    </actions>
+                </pickerField>
+
                 <pickerField id="departurePortField" property="departurePort">
+                    <actions>
+                        <action id="lookup" type="picker_lookup"/>
+                        <action id="clear" type="picker_clear"/>
+                    </actions>
+                </pickerField>
+                <label value="msg://chooseDestinationPlace"/>
+                <checkBox id="checkBoxMoonDestination" caption="msg://moon"/>
+                <pickerField id="planetDestinationPicker" metaClass="st_Planet" caption="msg://destination">
+                    <actions>
+                        <action id="lookup" type="picker_lookup"/>
+                        <action id="clear" type="picker_clear"/>
+                    </actions>
+                </pickerField>
+                <pickerField id="moonDestinationPicker" metaClass="st_Moon" caption="msg://destination" visible="false">
                     <actions>
                         <action id="lookup" type="picker_lookup"/>
                         <action id="clear" type="picker_clear"/>
@@ -90,7 +133,7 @@
                         <action id="clear" type="picker_clear"/>
                     </actions>
                 </pickerField>
-                <textField id="totalWeightField" property="totalWeight"/>
+                <textField id="totalWeightField" property="totalWeight" editable="false"/>
                 <textField id="totalChargeField" property="totalCharge"/>
             </column>
         </form>

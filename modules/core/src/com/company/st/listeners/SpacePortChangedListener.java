@@ -32,7 +32,9 @@ public class SpacePortChangedListener implements
         if (entity.getIsDefault()){
             if (entity.getPlanet() != null) {
                 List<SpacePort> spacePortList = (List<SpacePort>) entityManager.createQuery(
-                        "select s from st_SpacePort s where s.planet = :planet").setParameter("planet", entity.getPlanet()).getResultList();
+                        "select s from st_SpacePort s where s.planet = :planet")
+                        .setParameter("planet", entity.getPlanet())
+                        .getResultList();
                 if (!spacePortList.isEmpty()){
                     for (SpacePort port: spacePortList) {
                         port.setIsDefault(false);
@@ -42,7 +44,9 @@ public class SpacePortChangedListener implements
             }
             else if (entity.getMoon() != null) {
                 List<SpacePort> spacePortList = (List<SpacePort>) entityManager.createQuery(
-                        "select s from st_SpacePort s where s.moon = :moon").setParameter("moon", entity.getMoon()).getResultList();
+                        "select s from st_SpacePort s where s.moon = :moon")
+                        .setParameter("moon", entity.getMoon())
+                        .getResultList();
                 if (!spacePortList.isEmpty()){
                     for (SpacePort port: spacePortList) {
                         port.setIsDefault(false);
