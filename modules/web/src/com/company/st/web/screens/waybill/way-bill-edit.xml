@@ -20,13 +20,19 @@
         <collection id="companyDc"
                   class="com.company.st.entity.customer.Company"
                   >
-            <view>
-                <property name="id"/>
-            </view>
-            <loader id="companyDL">
-            <query>
-                <![CDATA[select e from st_Company e]]>
-            </query>
+            <loader dynamicAttributes="true">
+                <query>
+                    <![CDATA[select e from st_Company e]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="individualDc"
+                    class="com.company.st.entity.customer.Individual"
+        >
+            <loader dynamicAttributes="true">
+                <query>
+                    <![CDATA[select e from st_Individual e]]>
+                </query>
             </loader>
         </collection>
     </data>
@@ -44,18 +50,8 @@
                         <action id="clear" type="picker_clear"/>
                     </actions>
                 </pickerField>
-                <pickerField id="companyShipperPicker" metaClass="st_Company" caption="msg://shipper" visible="false">
-                    <actions>
-                        <action id="lookup" type="picker_lookup"/>
-                        <action id="clear" type="picker_clear"/>
-                    </actions>
-                </pickerField>
-                <pickerField id="individualShipperPicker" metaClass="st_Individual" caption="msg://shipper" visible="true">
-                    <actions>
-                        <action id="lookup" type="picker_lookup"/>
-                        <action id="clear" type="picker_clear"/>
-                    </actions>
-                </pickerField>
+                <lookupField id="companyShipperLookup" dataContainer="wayBillDc" property="shipper" caption="msg://shipper" optionsContainer="companyDc" visible="false"/>
+                <lookupField id="individualShipperLookup" dataContainer="wayBillDc" property="shipper" caption="msg://shipper" optionsContainer="individualDc"/>
                 <label value="msg://chooseConsigneeType"/>
                 <checkBox id="checkBoxCompanyConsignee" caption="msg://company"/>
                 <pickerField id="consigneeField" property="consignee" visible="false">
