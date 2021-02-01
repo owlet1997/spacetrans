@@ -220,7 +220,7 @@ create table ST_DISCOUNTS (
     DELETED_BY varchar(50),
     --
     GRADE varchar(50) not null,
-    VALUE_ decimal(2, 2) not null,
+    VALUE_ decimal(19, 2) not null,
     --
     primary key (ID)
 )^

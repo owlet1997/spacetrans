@@ -19,7 +19,7 @@ public class Discounts extends StandardEntity {
     private String grade;
 
     @NotNull
-    @Column(name = "VALUE_", nullable = false, unique = true, precision = 2, scale = 2)
+    @Column(name = "VALUE_", nullable = false, unique = true)
     @Positive
     private BigDecimal value;
 

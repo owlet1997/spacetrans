@@ -12,6 +12,8 @@
         <property name="remoteServices">
             <map>
                 <entry key="st_CsvImporterService" value="com.company.st.service.CsvImporterService"/>
+                <entry key="st_ChargeCountWaybillItemService"
+                       value="com.company.st.service.ChargeCountWaybillItemService"/>
             </map>
         </property>
     </bean>

@@ -6,6 +6,7 @@ import com.company.st.entity.spaceport.SpacePort;
 import com.haulmont.chile.core.annotations.Composition;
 import com.haulmont.cuba.core.entity.StandardEntity;
 import com.haulmont.cuba.core.entity.annotation.OnDelete;
+import com.haulmont.cuba.core.entity.annotation.PublishEntityChangedEvents;
 import com.haulmont.cuba.core.global.DeletePolicy;
 import com.haulmont.cuba.security.entity.User;
 
@@ -13,6 +14,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@PublishEntityChangedEvents
 @Table(name = "ST_WAY_BILL")
 @Entity(name = "st_WayBill")
 public class WayBill extends StandardEntity {
@@ -125,7 +127,7 @@ public class WayBill extends StandardEntity {
     }
 
     public void setShipper(Customer shipper) {
-        this.shipper = shipper;
+        this.shipper = (Customer) shipper;
     }
 
     public User getCreator() {

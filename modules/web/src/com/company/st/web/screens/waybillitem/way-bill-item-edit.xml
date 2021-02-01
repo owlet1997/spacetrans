@@ -27,7 +27,7 @@
                 <textField id="dimLengthField" property="dim.length"/>
                 <textField id="dimWidthField" property="dim.width"/>
                 <textField id="dimHeightField" property="dim.height"/>
-                <textField id="chargeField" property="charge"/>
+                <textField id="chargeField" property="charge" editable="false"/>
             </column>
         </form>
         <hbox id="editActions" spacing="true">
