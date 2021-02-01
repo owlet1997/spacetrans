@@ -12,41 +12,65 @@
                 <property name="departurePort" view="_minimal"/>
                 <property name="destinationPort" view="_minimal"/>
                 <property name="carrier" view="_minimal"/>
-                <property name="items" view="_minimal"/>
+                <property name="items" fetch="JOIN" view="_minimal"/>
             </view>
             <loader/>
             <collection id="itemsDc" property="items"/>
         </instance>
-        <instance id="shipperDC"
-                  class="com.company.st.entity.customer.Company">
-            <view extends="_local">
+        <collection id="companyDc"
+                  class="com.company.st.entity.customer.Company"
+                  >
+            <view>
+                <property name="id"/>
             </view>
-            <loader/>
-        </instance>
+            <loader id="companyDL">
+            <query>
+                <![CDATA[select e from st_Company e]]>
+            </query>
+            </loader>
+        </collection>
     </data>
     <dialogMode height="600"
                 width="800"/>
-    <facets>
-        <lookupScreen id="lookupCompanyScreen" container="itemsDc"
-                      entityClass="com.company.st.entity.customer.Company"
-                      screenClass="com.company.st.web.screens.company.CompanyBrowse"/>
-        <lookupScreen id="lookupIndividualScreen" container="itemsDc"
-                      entityClass="com.company.st.entity.customer.Individual"
-                      screenClass="com.company.st.web.screens.individual.IndividualBrowse"/>
-    </facets>
     <layout expand="editActions" spacing="true">
         <form id="form" dataContainer="wayBillDc">
             <column width="350px">
                 <textField id="referenceField" property="reference"/>
-                <checkBox id="shipperFieldCheckBox" caption="msg://Company"/>
-                <pickerField id="shipperField" property="shipper">
+                <label value="msg://chooseShipperType"/>
+                <checkBox id="checkBoxCompanyShipper" caption="msg://company"/>
+                <pickerField id="shipperField" property="shipper" visible="false">
                     <actions>
                         <action id="lookup" type="picker_lookup"/>
                         <action id="clear" type="picker_clear"/>
                     </actions>
                 </pickerField>
-                <checkBox id="consigneeFieldCheckBox" caption="msg://Company"/>
-                <pickerField id="consigneeField" property="consignee">
+                <pickerField id="companyShipperPicker" metaClass="st_Company" caption="msg://shipper" visible="false">
+                    <actions>
+                        <action id="lookup" type="picker_lookup"/>
+                        <action id="clear" type="picker_clear"/>
+                    </actions>
+                </pickerField>
+                <pickerField id="individualShipperPicker" metaClass="st_Individual" caption="msg://shipper" visible="true">
+                    <actions>
+                        <action id="lookup" type="picker_lookup"/>
+                        <action id="clear" type="picker_clear"/>
+                    </actions>
+                </pickerField>
+                <label value="msg://chooseConsigneeType"/>
+                <checkBox id="checkBoxCompanyConsignee" caption="msg://company"/>
+                <pickerField id="consigneeField" property="consignee" visible="false">
+                    <actions>
+                        <action id="lookup" type="picker_lookup"/>
+                        <action id="clear" type="picker_clear"/>
+                    </actions>
+                </pickerField>
+                <pickerField id="individualConsigneePicker" metaClass="st_Individual" caption="msg://consignee" visible="true">
+                    <actions>
+                        <action id="lookup" type="picker_lookup"/>
+                        <action id="clear" type="picker_clear"/>
+                    </actions>
+                </pickerField>
+                <pickerField id="companyConsigneePicker" metaClass="st_Company" caption="msg://shipper" visible="false">
                     <actions>
                         <action id="lookup" type="picker_lookup"/>
                         <action id="clear" type="picker_clear"/>
@@ -74,7 +98,7 @@
                 <textField id="totalChargeField" property="totalCharge"/>
             </column>
         </form>
-        <groupBox id="itemsBox" caption="msg://com.company.st.entity.waybill/WayBill.items">
+        <groupBox id="itemsBox" caption="msg:WayBill.items">
             <table id="itemsTable" dataContainer="itemsDc" width="100%" height="200px">
                 <actions>
                     <action id="create" type="create"/>
