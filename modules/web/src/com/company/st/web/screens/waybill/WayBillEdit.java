@@ -11,6 +11,7 @@ import com.company.st.service.ChargeCountWaybillItemService;
 import com.company.st.web.screens.company.CompanyBrowse;
 import com.haulmont.chile.core.model.MetaClass;
 import com.haulmont.cuba.core.global.DataManager;
+import com.haulmont.cuba.core.global.UserSessionSource;
 import com.haulmont.cuba.gui.Notifications;
 import com.haulmont.cuba.gui.RemoveOperation;
 import com.haulmont.cuba.gui.ScreenBuilders;
@@ -71,9 +72,11 @@ public class WayBillEdit extends StandardEditor<WayBill> {
     @Inject
     private ChargeCountWaybillItemService chargeCountWaybillItemService;
     @Inject
-    private Form form;
-    @Inject
     private Logger log;
+    @Inject
+    private PickerField<Customer> consigneeField;
+    @Inject
+    private UserSessionSource userSessionSource;
 
     // динамическое изменение поля totalWeight после изменений в таблице WayBillItems
 
@@ -173,7 +176,7 @@ public class WayBillEdit extends StandardEditor<WayBill> {
     public void onCompanyShipperLookupValueChange(HasValue.ValueChangeEvent<Customer> event) {
         Customer company = event.getValue();
         log.info(company.toString());
-        shipperField.setValue((Customer)company);
+        shipperField.setValue((Customer) company);
     }
 
     @Subscribe("individualShipperLookup")
@@ -215,10 +218,17 @@ public class WayBillEdit extends StandardEditor<WayBill> {
         }
     }
 
+    @Subscribe("individualConsigneePicker")
+    public void onIndividualConsigneePickerValueChange(HasValue.ValueChangeEvent<Individual> event) {
+        Customer customer = event.getValue();
+        consigneeField.setValue(customer);
+    }
 
-
-
-
+    @Subscribe("companyConsigneePicker")
+    public void onCompanyConsigneePickerValueChange(HasValue.ValueChangeEvent<Company> event) {
+        Customer customer = event.getValue();
+        consigneeField.setValue(customer);
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -232,6 +242,12 @@ public class WayBillEdit extends StandardEditor<WayBill> {
             planetDeparturePicker.setVisible(true);
             moonDeparturePicker.setVisible(false);
         }
+    }
+
+    @Subscribe
+    public void onInitEntity(InitEntityEvent<WayBill> event) {
+        WayBill wayBill = event.getEntity();
+        wayBill.setCreator(userSessionSource.getUserSession().getUser());
     }
 
     @Subscribe("checkBoxMoonDestination")
