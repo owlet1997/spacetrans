@@ -14,18 +14,15 @@ import com.haulmont.cuba.core.global.UserSessionSource;
 import com.haulmont.cuba.gui.Notifications;
 import com.haulmont.cuba.gui.RemoveOperation;
 import com.haulmont.cuba.gui.components.*;
-import com.haulmont.cuba.gui.components.data.ValueSource;
 import com.haulmont.cuba.gui.model.CollectionPropertyContainer;
 import com.haulmont.cuba.gui.model.InstanceContainer;
 import com.haulmont.cuba.gui.screen.*;
 import com.company.st.entity.waybill.WayBill;
 import org.slf4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @UiController("st_WayBill.edit")
@@ -80,6 +77,8 @@ public class WayBillEdit extends StandardEditor<WayBill> {
     private UserSessionSource userSessionSource;
     @Inject
     private LookupField<Carrier> carrierField;
+    @Inject
+    private Table<WayBillItem> itemsTable;
 
     // автоматическое заполнение поля creator в создаваемой накладной
     @Subscribe
@@ -96,7 +95,6 @@ public class WayBillEdit extends StandardEditor<WayBill> {
         try {
             double totalWeight = getTotalWeight();
             double totalCharge = chargeCountWaybillItemService.getTotalCharge(wayBillDc.getItem());
-
             totalWeightField.setValue(totalWeight);
             totalChargeField.setValue(totalCharge);
         } catch (NullPointerException e){
@@ -124,6 +122,17 @@ public class WayBillEdit extends StandardEditor<WayBill> {
 
             totalWeightField.setValue(totalWeight);
             totalChargeField.setValue(totalCharge);
+
+            List<WayBillItem> list = itemsDc.getItems();
+            List<WayBillItem> mutableList = new ArrayList<>(list);
+
+            for (int i = 0; i < list.size(); i++){
+                mutableList.get(i).setNumber(i+1);
+            }
+            log.info(mutableList.toString());
+
+            itemsDc.setItems(mutableList);
+
         } catch (NullPointerException e){
             notifications.create(Notifications.NotificationType.WARNING).withCaption("Список пуст!").show();
         }
@@ -324,6 +333,42 @@ public class WayBillEdit extends StandardEditor<WayBill> {
             }
         }
         return totalWeight;
+    }
+
+    @Subscribe("buttonUp")
+    public void onButtonUpClick(Button.ClickEvent event) {
+        if (itemsTable.getSingleSelected() != null){
+            List<WayBillItem> list = itemsDc.getItems();
+            List<WayBillItem> mutableList = new ArrayList<>(list);
+            WayBillItem selected = itemsTable.getSingleSelected();
+            int index = mutableList.indexOf(selected);
+            if (index > 0){
+                WayBillItem prev = mutableList.get(index-1);
+                mutableList.set(index-1, selected);
+                mutableList.set(index, prev);
+                selected.setNumber(index);
+                prev.setNumber(index+1);
+            }
+            itemsDc.setItems(mutableList);
+        }
+    }
+
+    @Subscribe("buttonDown")
+    public void onButtonDownClick(Button.ClickEvent event) {
+        if (itemsTable.getSingleSelected() != null){
+            List<WayBillItem> list = itemsDc.getItems();
+            List<WayBillItem> mutableList = new ArrayList<>(list);
+            WayBillItem selected = itemsTable.getSingleSelected();
+            int index = mutableList.indexOf(selected);
+            if (index < mutableList.size() - 1){
+                WayBillItem next = mutableList.get(index+1);
+                mutableList.set(index+1, selected);
+                mutableList.set(index, next);
+                selected.setNumber(index+2);
+                next.setNumber(index+1);
+            }
+            itemsDc.setItems(mutableList);
+        }
     }
 
 

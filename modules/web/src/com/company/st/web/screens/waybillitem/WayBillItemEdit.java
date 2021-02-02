@@ -3,8 +3,11 @@ package com.company.st.web.screens.waybillitem;
 import com.company.st.service.ChargeCountWaybillItemService;
 import com.haulmont.cuba.gui.components.HasValue;
 import com.haulmont.cuba.gui.components.TextField;
+import com.haulmont.cuba.gui.components.TextInputField;
 import com.haulmont.cuba.gui.screen.*;
 import com.company.st.entity.waybill.WayBillItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
@@ -14,6 +17,7 @@ import java.math.BigDecimal;
 @EditedEntityContainer("wayBillItemDc")
 @LoadDataBeforeShow
 public class WayBillItemEdit extends StandardEditor<WayBillItem> {
+    private static final Logger log = LoggerFactory.getLogger(WayBillItemEdit.class);
     @Inject
     private TextField<BigDecimal> chargeField;
     @Inject
@@ -27,11 +31,25 @@ public class WayBillItemEdit extends StandardEditor<WayBillItem> {
     private TextField<Double> dimWidthField;
     @Inject
     private TextField<Double> dimLengthField;
+    @Inject
+    private TextField<Integer> numberField;
 
     @Subscribe
     public void onInitEntity(InitEntityEvent<WayBillItem> event) {
         double[] arr = getArray();
         chargeField.setValue(BigDecimal.valueOf(chargeCountWaybillItemService.getChargeValue(arr)));
+    }
+
+    @Subscribe("nameField")
+    public void onNameFieldTextChange(TextInputField.TextChangeEvent event) {
+        if (getEditedEntity().getWayBill().getItems() == null){
+            getEditedEntity().setNumber(1);
+            numberField.setValue(getEditedEntity().getNumber());
+        } else {
+            int number = getEditedEntity().getWayBill().getItems().size();
+            getEditedEntity().setNumber(number + 1);
+            numberField.setValue(getEditedEntity().getNumber());
+        }
     }
 
     @Subscribe("dimWidthField")

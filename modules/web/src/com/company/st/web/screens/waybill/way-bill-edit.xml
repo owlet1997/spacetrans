@@ -14,7 +14,9 @@
                 <property name="carrier" view="_minimal">
                     <property name="ports" view="_minimal"/>
                 </property>
-                <property name="items" view="_minimal"/>
+                <property name="items" view="_minimal">
+                    <property name="number"/>
+                </property>
             </view>
             <loader/>
             <collection id="itemsDc" property="items"/>
@@ -149,12 +151,15 @@
                     <action id="remove" type="remove"/>
                 </actions>
                 <columns>
+                    <column id="number"/>
                     <column id="name"/>
                 </columns>
                 <buttonsPanel>
                     <button action="itemsTable.create"/>
                     <button action="itemsTable.edit"/>
                     <button action="itemsTable.remove"/>
+                    <button id="buttonUp" caption="msg://up"/>
+                    <button id="buttonDown" caption="msg://down"/>
                 </buttonsPanel>
             </table>
         </groupBox>
