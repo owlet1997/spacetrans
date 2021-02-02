@@ -7,7 +7,7 @@
         <instance id="carrierDc"
                   class="com.company.st.entity.spaceport.Carrier">
             <view extends="_local">
-                <property name="ports" view="_minimal"/>
+                <property name="ports" view="_minimal" fetch="JOIN"/>
             </view>
             <loader/>
             <collection id="portsDc" property="ports"/>

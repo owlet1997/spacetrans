@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <views xmlns="http://schemas.haulmont.com/cuba/view.xsd">
 
+    <view entity="st_Carrier" name="new-carrier-view" extends="_local">
+        <property name="ports" fetch="JOIN" view="_local"/>
+    </view>
 </views>

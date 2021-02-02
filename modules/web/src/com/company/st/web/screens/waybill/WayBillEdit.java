@@ -5,27 +5,28 @@ import com.company.st.entity.customer.Customer;
 import com.company.st.entity.customer.Individual;
 import com.company.st.entity.spacebody.Moon;
 import com.company.st.entity.spacebody.Planet;
+import com.company.st.entity.spaceport.Carrier;
 import com.company.st.entity.spaceport.SpacePort;
 import com.company.st.entity.waybill.WayBillItem;
 import com.company.st.service.ChargeCountWaybillItemService;
-import com.company.st.web.screens.company.CompanyBrowse;
-import com.haulmont.chile.core.model.MetaClass;
 import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.UserSessionSource;
 import com.haulmont.cuba.gui.Notifications;
 import com.haulmont.cuba.gui.RemoveOperation;
-import com.haulmont.cuba.gui.ScreenBuilders;
 import com.haulmont.cuba.gui.components.*;
-import com.haulmont.cuba.gui.model.CollectionContainer;
+import com.haulmont.cuba.gui.components.data.ValueSource;
 import com.haulmont.cuba.gui.model.CollectionPropertyContainer;
 import com.haulmont.cuba.gui.model.InstanceContainer;
 import com.haulmont.cuba.gui.screen.*;
 import com.company.st.entity.waybill.WayBill;
 import org.slf4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @UiController("st_WayBill.edit")
 @UiDescriptor("way-bill-edit.xml")
@@ -77,18 +78,34 @@ public class WayBillEdit extends StandardEditor<WayBill> {
     private PickerField<Customer> consigneeField;
     @Inject
     private UserSessionSource userSessionSource;
+    @Inject
+    private LookupField<Carrier> carrierField;
+
+    // автоматическое заполнение поля creator в создаваемой накладной
+    @Subscribe
+    public void onInitEntity(InitEntityEvent<WayBill> event) {
+        WayBill wayBill = event.getEntity();
+        wayBill.setCreator(userSessionSource.getUserSession().getUser());
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////
 
     // динамическое изменение поля totalWeight после изменений в таблице WayBillItems
-
+    // после добавления новой записи
     @Install(to = "itemsTable.create", subject = "afterCloseHandler")
     private void itemsTableCreateAfterCloseHandler(AfterCloseEvent afterCloseEvent) {
-        double totalWeight = getTotalWeight();
-        double totalCharge = chargeCountWaybillItemService.getTotalCharge(wayBillDc.getItem());
+        try {
+            double totalWeight = getTotalWeight();
+            double totalCharge = chargeCountWaybillItemService.getTotalCharge(wayBillDc.getItem());
 
-        totalWeightField.setValue(totalWeight);
-        totalChargeField.setValue(totalCharge);
+            totalWeightField.setValue(totalWeight);
+            totalChargeField.setValue(totalCharge);
+        } catch (NullPointerException e){
+            notifications.create(Notifications.NotificationType.WARNING).withCaption("Список пуст!").show();
+        }
+
     }
 
+    // после изменения записи
     @Install(to = "itemsTable.edit", subject = "afterCloseHandler")
     private void itemsTableEditAfterCloseHandler(AfterCloseEvent afterCloseEvent) {
         double totalWeight = getTotalWeight();
@@ -98,13 +115,18 @@ public class WayBillEdit extends StandardEditor<WayBill> {
         totalChargeField.setValue(totalCharge);
     }
 
+    // после удаления записи
     @Install(to = "itemsTable.remove", subject = "afterActionPerformedHandler")
     private void itemsTableRemoveAfterActionPerformedHandler(RemoveOperation.AfterActionPerformedEvent<WayBillItem> afterActionPerformedEvent) {
-        double totalWeight = getTotalWeight();
-        double totalCharge = chargeCountWaybillItemService.getTotalCharge(wayBillDc.getItem());
+        try {
+            double totalWeight = getTotalWeight();
+            double totalCharge = chargeCountWaybillItemService.getTotalCharge(wayBillDc.getItem());
 
-        totalWeightField.setValue(totalWeight);
-        totalChargeField.setValue(totalCharge);
+            totalWeightField.setValue(totalWeight);
+            totalChargeField.setValue(totalCharge);
+        } catch (NullPointerException e){
+            notifications.create(Notifications.NotificationType.WARNING).withCaption("Список пуст!").show();
+        }
     }
 
     // установка значения порта по умолчанию     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,7 +142,7 @@ public class WayBillEdit extends StandardEditor<WayBill> {
                 .one();
             departurePortField.setValue(spacePort);
             } catch (IllegalStateException e){
-                notifications.create(Notifications.NotificationType.SYSTEM).withCaption("У данной планеты не задан порт по умолчанию!").show();
+                notifications.create(Notifications.NotificationType.WARNING).withCaption("У данной планеты не задан порт по умолчанию!").show();
             }
     }
 
@@ -135,10 +157,46 @@ public class WayBillEdit extends StandardEditor<WayBill> {
                     .one();
             departurePortField.setValue(spacePort);
         } catch (IllegalStateException e){
-            notifications.create(Notifications.NotificationType.SYSTEM).withCaption("У данного спутника не задан порт по умолчанию!").show();
+            notifications.create(Notifications.NotificationType.WARNING).withCaption("У данного спутника не задан порт по умолчанию!").show();
+            if (!carrierField.isEmpty()) carrierField.clear();
         }
 
     }
+
+    @Subscribe("destinationPortField")
+    public void onDestinationPortFieldValueChange(HasValue.ValueChangeEvent<SpacePort> event) {
+        if (!departurePortField.isEmpty() && !destinationPortField.isEmpty()){
+            SpacePort spacePort1 = departurePortField.getValue();
+            SpacePort spacePort2 = destinationPortField.getValue();
+            List<Carrier> carrierList = dataManager.load(Carrier.class).query("select e from st_Carrier e").view("new-carrier-view").list();
+            List<Carrier> filteredList = carrierList.stream().filter(e -> (e.getPorts().contains(spacePort1) && e.getPorts().contains(spacePort2))).collect(Collectors.toList());
+
+            carrierField.setOptionsList(filteredList);
+            if (filteredList.isEmpty()){
+                notifications.create(Notifications.NotificationType.WARNING).withCaption("Ни один перевозчик не обслуживает оба порта!").show();
+                if (!carrierField.isEmpty()) carrierField.clear();
+            }
+        }
+
+    }
+
+    @Subscribe("departurePortField")
+    public void onDeparturePortFieldValueChange(HasValue.ValueChangeEvent<SpacePort> event) {
+        if (!departurePortField.isEmpty() && !destinationPortField.isEmpty()){
+            SpacePort spacePort1 = departurePortField.getValue();
+            SpacePort spacePort2 = destinationPortField.getValue();
+            List<Carrier> carrierList = dataManager.load(Carrier.class).query("select e from st_Carrier e").view("new-carrier-view").list();
+
+            log.info(carrierList.toString());
+            List<Carrier> filteredList = carrierList.stream().filter(e -> (e.getPorts().contains(spacePort1) && e.getPorts().contains(spacePort2))).collect(Collectors.toList());
+
+            carrierField.setOptionsList(filteredList);
+            if (filteredList.isEmpty()){
+                notifications.create(Notifications.NotificationType.WARNING).withCaption("Ни один перевозчик не обслуживает оба порта!").show();
+            }
+        }
+    }
+
 
     // установка значения порта по умолчанию у планеты-получателя груза
     @Subscribe("planetDestinationPicker")
@@ -151,7 +209,7 @@ public class WayBillEdit extends StandardEditor<WayBill> {
             destinationPortField.setValue(spacePort);
 
         } catch (IllegalStateException e){
-            notifications.create(Notifications.NotificationType.SYSTEM).withCaption("У данной планеты не задан порт по умолчанию!").show();
+            notifications.create(Notifications.NotificationType.WARNING).withCaption("У данной планеты не задан порт по умолчанию!").show();
         }
     }
 
@@ -166,7 +224,7 @@ public class WayBillEdit extends StandardEditor<WayBill> {
 
             destinationPortField.setValue(spacePort);
         } catch (IllegalStateException e){
-            notifications.create(Notifications.NotificationType.SYSTEM).withCaption("У данного спутника не задан порт по умолчанию!").show();
+            notifications.create(Notifications.NotificationType.WARNING).withCaption("У данного спутника не задан порт по умолчанию!").show();
         }
     }
 
@@ -244,11 +302,6 @@ public class WayBillEdit extends StandardEditor<WayBill> {
         }
     }
 
-    @Subscribe
-    public void onInitEntity(InitEntityEvent<WayBill> event) {
-        WayBill wayBill = event.getEntity();
-        wayBill.setCreator(userSessionSource.getUserSession().getUser());
-    }
 
     @Subscribe("checkBoxMoonDestination")
     public void onCheckBoxMoonDestinationValueChange(HasValue.ValueChangeEvent<Boolean> event) {

@@ -17,6 +17,7 @@ public class Carrier extends StandardEntity {
     @Column(name = "NAME", nullable = false, unique = true, length = 50)
     private String name;
 
+
     @JoinTable(name = "ST_CARRIER_SPACE_PORT_LINK",
             joinColumns = @JoinColumn(name = "CARRIER_ID"),
             inverseJoinColumns = @JoinColumn(name = "SPACE_PORT_ID"))
