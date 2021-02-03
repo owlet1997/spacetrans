@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @UiController("st_WayBill.edit")
@@ -137,8 +136,8 @@ public class WayBillEdit extends StandardEditor<WayBill> {
     }
 
     private void recountTotalValues(){
-        double totalWeight = getTotalWeight();
-        double totalCharge = chargeCountWaybillItemService.getTotalCharge(wayBillDc.getItem());
+        double totalWeight = chargeCountWaybillItemService.getTotalWeight(getEditedEntity());
+        double totalCharge = chargeCountWaybillItemService.getTotalCharge(getEditedEntity());
 
         totalWeightField.setValue(totalWeight);
         totalChargeField.setValue(totalCharge);
@@ -200,11 +199,6 @@ public class WayBillEdit extends StandardEditor<WayBill> {
     @Subscribe("destinationPortField")
     public void onDestinationPortFieldValueChange(HasValue.ValueChangeEvent<SpacePort> event) {
         checkUniquePorts(destinationPortField,departurePortField,event);
-
-//        if (!departurePortField.isEmpty() && departurePortField.getValue() == event.getValue()){
-//            notifications.create(Notifications.NotificationType.ERROR).withCaption("Доставка в тот же порт невозможна!").show();
-//            destinationPortField.clear();
-//        }
         checkExistingCarriers();
     }
 
@@ -212,10 +206,6 @@ public class WayBillEdit extends StandardEditor<WayBill> {
     @Subscribe("departurePortField")
     public void onDeparturePortFieldValueChange(HasValue.ValueChangeEvent<SpacePort> event) {
         checkUniquePorts(departurePortField,destinationPortField,event);
-//        if (!destinationPortField.isEmpty() && destinationPortField.getValue() == event.getValue()){
-//            notifications.create(Notifications.NotificationType.ERROR).withCaption("Доставка в тот же порт невозможна!").show();
-//            departurePortField.clear();
-//        }
         checkExistingCarriers();
     }
 
@@ -342,17 +332,6 @@ public class WayBillEdit extends StandardEditor<WayBill> {
             planetDestinationPicker.setVisible(true);
             moonDestinationPicker.setVisible(false);
         }
-    }
-
-    private double getTotalWeight(){
-        double totalWeight = 0;
-        List<WayBillItem> wayBillItems = itemsDc.getItems();
-        if (!wayBillItems.isEmpty()) {
-            for (WayBillItem e: wayBillItems) {
-                totalWeight += e.getWeight();
-            }
-        }
-        return totalWeight;
     }
 
     //передвижение элемента WayBillItem вверх

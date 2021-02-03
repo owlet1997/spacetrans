@@ -34,6 +34,7 @@ public class WayBillChangedListener {
         if (type == EntityChangedEvent.Type.UPDATED){
             if (changes.isChanged("items")){
                 wayBill.setTotalCharge(chargeCountWaybillItemService.getTotalCharge(wayBill));
+                wayBill.setTotalWeight(chargeCountWaybillItemService.getTotalWeight(wayBill));
             }
         }
     }

@@ -11,4 +11,6 @@ public interface ChargeCountWaybillItemService {
     double getChargeValue(double[] arr);
 
     double getTotalCharge(WayBill wayBill);
+
+    double getTotalWeight(WayBill wayBill);
 }

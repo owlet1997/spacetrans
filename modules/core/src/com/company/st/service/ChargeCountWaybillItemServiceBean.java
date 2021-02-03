@@ -39,5 +39,17 @@ public class ChargeCountWaybillItemServiceBean implements ChargeCountWaybillItem
         }
     }
 
+    @Override
+    public double getTotalWeight(WayBill wayBill) {
+        try{
+            double totalWeight = 0;
+            totalWeight = wayBill.getItems().stream().mapToDouble(WayBillItem::getWeight).sum();
+            return totalWeight;
+        } catch (NullPointerException e){
+            log.error("List is empty", e);
+            return 0;
+        }
+    }
+
 
 }
