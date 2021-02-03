@@ -4,7 +4,6 @@ import com.company.st.entity.spaceport.Dimensions;
 import com.haulmont.chile.core.annotations.NamePattern;
 import com.haulmont.cuba.core.entity.StandardEntity;
 import com.haulmont.cuba.core.entity.annotation.EmbeddedParameters;
-import com.haulmont.cuba.core.entity.annotation.PublishEntityChangedEvents;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -18,7 +17,7 @@ public class WayBillItem extends StandardEntity {
     private static final long serialVersionUID = -8426225825659634861L;
 
     @NotNull
-    @Column(name = "NUMBER_", nullable = false, unique = true)
+    @Column(name = "NUMBER_", nullable = false)
     private Integer number;
 
     @NotNull

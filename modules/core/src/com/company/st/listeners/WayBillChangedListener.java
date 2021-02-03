@@ -27,14 +27,16 @@ public class WayBillChangedListener {
     public void beforeCommit(EntityChangedEvent<WayBill, UUID> event) {
         log.info(String.valueOf(event));
 
-        WayBill wayBill = txDataManager.load(event.getEntityId()).one();
+        if (event.getType().equals(EntityChangedEvent.Type.UPDATED)){
+            AttributeChanges changes = event.getChanges();
 
-        AttributeChanges changes = event.getChanges();
-        EntityChangedEvent.Type type = event.getType();
-        if (type == EntityChangedEvent.Type.UPDATED){
             if (changes.isChanged("items")){
+                WayBill wayBill = txDataManager.load(event.getEntityId()).view("new-wayBill-view").one();
+
                 wayBill.setTotalCharge(chargeCountWaybillItemService.getTotalCharge(wayBill));
+
                 wayBill.setTotalWeight(chargeCountWaybillItemService.getTotalWeight(wayBill));
+
             }
         }
     }

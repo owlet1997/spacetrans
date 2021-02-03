@@ -4,4 +4,19 @@
     <view entity="st_Carrier" name="new-carrier-view" extends="_local">
         <property name="ports" fetch="JOIN" view="_local"/>
     </view>
+    <view entity="st_WayBill" name="new-wayBill-view" extends="_local">
+        <property name="items" fetch="JOIN" view="_minimal">
+            <property name="weight"/>
+            <property name="dim" view="_minimal">
+                <property name="length"/>
+                <property name="width"/>
+                <property name="height"/>
+            </property>
+            <property name="charge"/>
+            <property name="wayBill" view="_minimal"/>
+        </property>
+        <property name="shipper" view="_minimal">
+            <property name="grade"/>
+        </property>
+    </view>
 </views>

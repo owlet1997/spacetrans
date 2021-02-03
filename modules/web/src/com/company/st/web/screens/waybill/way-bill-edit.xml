@@ -16,6 +16,8 @@
                 </property>
                 <property name="items" view="_minimal">
                     <property name="number"/>
+                    <property name="weight"/>
+                    <property name="charge"/>
                 </property>
             </view>
             <loader/>
@@ -153,6 +155,8 @@
                 <columns>
                     <column id="number"/>
                     <column id="name"/>
+                    <column id="charge"/>
+                    <column id="weight"/>
                 </columns>
                 <buttonsPanel>
                     <button action="itemsTable.create"/>
