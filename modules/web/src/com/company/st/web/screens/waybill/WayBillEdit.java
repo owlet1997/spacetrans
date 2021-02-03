@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @UiController("st_WayBill.edit")
@@ -93,10 +94,11 @@ public class WayBillEdit extends StandardEditor<WayBill> {
     @Install(to = "itemsTable.create", subject = "afterCloseHandler")
     private void itemsTableCreateAfterCloseHandler(AfterCloseEvent afterCloseEvent) {
         try {
-            double totalWeight = getTotalWeight();
-            double totalCharge = chargeCountWaybillItemService.getTotalCharge(wayBillDc.getItem());
-            totalWeightField.setValue(totalWeight);
-            totalChargeField.setValue(totalCharge);
+            if (itemsTable.getItems() != null){
+                recountTotalValues();
+            } else {
+                notifications.create(Notifications.NotificationType.WARNING).withCaption("Список пуст!").show();
+            }
         } catch (NullPointerException e){
             notifications.create(Notifications.NotificationType.WARNING).withCaption("Список пуст!").show();
         }
@@ -106,22 +108,18 @@ public class WayBillEdit extends StandardEditor<WayBill> {
     // после изменения записи
     @Install(to = "itemsTable.edit", subject = "afterCloseHandler")
     private void itemsTableEditAfterCloseHandler(AfterCloseEvent afterCloseEvent) {
-        double totalWeight = getTotalWeight();
-        double totalCharge = chargeCountWaybillItemService.getTotalCharge(wayBillDc.getItem());
-
-        totalWeightField.setValue(totalWeight);
-        totalChargeField.setValue(totalCharge);
+        recountTotalValues();
     }
 
     // после удаления записи
     @Install(to = "itemsTable.remove", subject = "afterActionPerformedHandler")
     private void itemsTableRemoveAfterActionPerformedHandler(RemoveOperation.AfterActionPerformedEvent<WayBillItem> afterActionPerformedEvent) {
         try {
-            double totalWeight = getTotalWeight();
-            double totalCharge = chargeCountWaybillItemService.getTotalCharge(wayBillDc.getItem());
-
-            totalWeightField.setValue(totalWeight);
-            totalChargeField.setValue(totalCharge);
+            if (itemsTable.getItems() != null){
+                recountTotalValues();
+            } else {
+                notifications.create(Notifications.NotificationType.WARNING).withCaption("Список пуст!").show();
+            }
 
             List<WayBillItem> list = itemsDc.getItems();
             List<WayBillItem> mutableList = new ArrayList<>(list);
@@ -138,59 +136,97 @@ public class WayBillEdit extends StandardEditor<WayBill> {
         }
     }
 
+    private void recountTotalValues(){
+        double totalWeight = getTotalWeight();
+        double totalCharge = chargeCountWaybillItemService.getTotalCharge(wayBillDc.getItem());
+
+        totalWeightField.setValue(totalWeight);
+        totalChargeField.setValue(totalCharge);
+    }
+
     // установка значения порта по умолчанию     ////////////////////////////////////////////////////////////////////////////////////////////
 
     // установка значения порта по умолчанию у планеты-отправителя груза
     @Subscribe("planetDeparturePicker")
     public void onPlanetDeparturePickerValueChange(HasValue.ValueChangeEvent<Planet> event) {
-        try{
-            Planet planet = event.getValue();
-            SpacePort spacePort = dataManager.loadValue("select e from st_SpacePort e where e.isDefault = :default and e.planet = :planet", SpacePort.class)
-                .parameter("planet", planet)
-                .parameter("default", true)
-                .one();
-            departurePortField.setValue(spacePort);
-            } catch (IllegalStateException e){
-                notifications.create(Notifications.NotificationType.WARNING).withCaption("У данной планеты не задан порт по умолчанию!").show();
-            }
+        findDefaultPlanetPort(event,departurePortField);
     }
 
     // установка значения порта по умолчанию у спутника-отправителя груза
     @Subscribe("moonDeparturePicker")
     public void onMoonDeparturePickerValueChange(HasValue.ValueChangeEvent<Moon> event) {
+        findDefaultMoonPort(event,departurePortField);
+    }
+
+    // установка значения порта по умолчанию у планеты-получателя груза
+    @Subscribe("planetDestinationPicker")
+    public void onPlanetDestinationPickerValueChange(HasValue.ValueChangeEvent<Planet> event) {
+        findDefaultPlanetPort(event,destinationPortField);
+    }
+
+    // установка значения порта по умолчанию у спутника-получателя груза
+    @Subscribe("moonDestinationPicker")
+    public void onMoonDestinationPickerValueChange(HasValue.ValueChangeEvent<Moon> event) {
+        findDefaultMoonPort(event,destinationPortField);
+    }
+
+    private void findDefaultPlanetPort(HasValue.ValueChangeEvent<Planet> event, PickerField<SpacePort> portPickerField){
+        try{
+            Planet planet = event.getValue();
+            SpacePort spacePort = dataManager.loadValue("select e from st_SpacePort e where e.isDefault = true and e.planet = :planet", SpacePort.class)
+                    .parameter("planet", planet)
+                    .parameter("default", true)
+                    .one();
+            portPickerField.setValue(spacePort);
+        } catch (IllegalStateException e){
+            notifications.create(Notifications.NotificationType.WARNING).withCaption("У данной планеты не задан порт по умолчанию!").show();
+        }
+    }
+
+    private void findDefaultMoonPort(HasValue.ValueChangeEvent<Moon> event, PickerField<SpacePort> portPickerField){
         try{
             Moon moon = event.getValue();
-            SpacePort spacePort = dataManager.load(SpacePort.class).query("select e from st_SpacePort e where e.isDefault = :default and e.moon = :moon")
-                    .parameter("default", true)
+            SpacePort spacePort = dataManager.loadValue("select e from st_SpacePort e where e.isDefault = true and e.moon = :moon", SpacePort.class)
                     .parameter("moon", moon)
                     .one();
-            departurePortField.setValue(spacePort);
+            portPickerField.setValue(spacePort);
         } catch (IllegalStateException e){
             notifications.create(Notifications.NotificationType.WARNING).withCaption("У данного спутника не задан порт по умолчанию!").show();
-            if (!carrierField.isEmpty()) carrierField.clear();
         }
-
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    //проверка наличия перевозчика для выбранного порта получения
     @Subscribe("destinationPortField")
     public void onDestinationPortFieldValueChange(HasValue.ValueChangeEvent<SpacePort> event) {
-        if (!departurePortField.isEmpty() && !destinationPortField.isEmpty()){
-            SpacePort spacePort1 = departurePortField.getValue();
-            SpacePort spacePort2 = destinationPortField.getValue();
-            List<Carrier> carrierList = dataManager.load(Carrier.class).query("select e from st_Carrier e").view("new-carrier-view").list();
-            List<Carrier> filteredList = carrierList.stream().filter(e -> (e.getPorts().contains(spacePort1) && e.getPorts().contains(spacePort2))).collect(Collectors.toList());
+        checkUniquePorts(destinationPortField,departurePortField,event);
 
-            carrierField.setOptionsList(filteredList);
-            if (filteredList.isEmpty()){
-                notifications.create(Notifications.NotificationType.WARNING).withCaption("Ни один перевозчик не обслуживает оба порта!").show();
-                if (!carrierField.isEmpty()) carrierField.clear();
-            }
-        }
-
+//        if (!departurePortField.isEmpty() && departurePortField.getValue() == event.getValue()){
+//            notifications.create(Notifications.NotificationType.ERROR).withCaption("Доставка в тот же порт невозможна!").show();
+//            destinationPortField.clear();
+//        }
+        checkExistingCarriers();
     }
 
+    //проверка наличия перевозчика для выбранного порта отправления
     @Subscribe("departurePortField")
     public void onDeparturePortFieldValueChange(HasValue.ValueChangeEvent<SpacePort> event) {
+        checkUniquePorts(departurePortField,destinationPortField,event);
+//        if (!destinationPortField.isEmpty() && destinationPortField.getValue() == event.getValue()){
+//            notifications.create(Notifications.NotificationType.ERROR).withCaption("Доставка в тот же порт невозможна!").show();
+//            departurePortField.clear();
+//        }
+        checkExistingCarriers();
+    }
+
+    private void checkUniquePorts(PickerField<SpacePort> thisPort, PickerField<SpacePort> thatPort, HasValue.ValueChangeEvent<SpacePort> event){
+        if (!thatPort.isEmpty() && !thisPort.isEmpty() && thatPort.getValue().equals(event.getValue())){
+            notifications.create(Notifications.NotificationType.ERROR).withCaption("Доставка в тот же порт невозможна!").show();
+            thisPort.clear();
+        }
+    }
+
+    private void checkExistingCarriers(){
         if (!departurePortField.isEmpty() && !destinationPortField.isEmpty()){
             SpacePort spacePort1 = departurePortField.getValue();
             SpacePort spacePort2 = destinationPortField.getValue();
@@ -205,52 +241,22 @@ public class WayBillEdit extends StandardEditor<WayBill> {
             }
         }
     }
-
-
-    // установка значения порта по умолчанию у планеты-получателя груза
-    @Subscribe("planetDestinationPicker")
-    public void onPlanetDestinationPickerValueChange(HasValue.ValueChangeEvent<Planet> event) {
-        try{
-            Planet planet = event.getValue();
-            SpacePort spacePort = dataManager.loadValue("select e from st_SpacePort e where e.isDefault = true and e.planet = :planet", SpacePort.class)
-                    .parameter("planet", planet)
-                    .one();
-            destinationPortField.setValue(spacePort);
-
-        } catch (IllegalStateException e){
-            notifications.create(Notifications.NotificationType.WARNING).withCaption("У данной планеты не задан порт по умолчанию!").show();
-        }
-    }
-
-    // установка значения порта по умолчанию у спутника-получателя груза
-    @Subscribe("moonDestinationPicker")
-    public void onMoonDestinationPickerValueChange(HasValue.ValueChangeEvent<Moon> event) {
-        try{
-            Moon moon = event.getValue();
-            SpacePort spacePort = dataManager.loadValue("select e from st_SpacePort e where e.isDefault = true and e.moon = :moon", SpacePort.class)
-                    .parameter("moon", moon)
-                    .one();
-
-            destinationPortField.setValue(spacePort);
-        } catch (IllegalStateException e){
-            notifications.create(Notifications.NotificationType.WARNING).withCaption("У данного спутника не задан порт по умолчанию!").show();
-        }
-    }
-
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     @Subscribe("companyShipperLookup")
     public void onCompanyShipperLookupValueChange(HasValue.ValueChangeEvent<Customer> event) {
         Customer company = event.getValue();
         log.info(company.toString());
-        shipperField.setValue((Customer) company);
+
+        shipperField.setValue(company);
     }
 
     @Subscribe("individualShipperLookup")
     public void onIndividualShipperLookupValueChange(HasValue.ValueChangeEvent<Customer> event) {
         Customer individual = event.getValue();
         log.info(individual.toString());
-        shipperField.setValue((Customer) individual);
+
+        shipperField.setValue(individual);
     }
 
     @Subscribe("checkBoxCompanyShipper")
@@ -288,13 +294,27 @@ public class WayBillEdit extends StandardEditor<WayBill> {
     @Subscribe("individualConsigneePicker")
     public void onIndividualConsigneePickerValueChange(HasValue.ValueChangeEvent<Individual> event) {
         Customer customer = event.getValue();
-        consigneeField.setValue(customer);
+        if (customer!= null && customer.equals(shipperField.getValue())){
+            log.info(customer.toString());
+
+            notifications.create(Notifications.NotificationType.ERROR).withCaption("Получатель и отправитель не могут быть одним и тем же лицом!").show();
+            individualConsigneePicker.clear();
+        } else{
+            consigneeField.setValue(customer);
+        }
     }
 
     @Subscribe("companyConsigneePicker")
     public void onCompanyConsigneePickerValueChange(HasValue.ValueChangeEvent<Company> event) {
         Customer customer = event.getValue();
-        consigneeField.setValue(customer);
+        if (customer!= null && customer.equals(shipperField.getValue())){
+            log.info(customer.toString());
+
+            notifications.create(Notifications.NotificationType.ERROR).withCaption("Получатель и отправитель не могут быть одним и тем же лицом!").show();
+            companyConsigneePicker.clear();
+        } else {
+            consigneeField.setValue(customer);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -335,6 +355,7 @@ public class WayBillEdit extends StandardEditor<WayBill> {
         return totalWeight;
     }
 
+    //передвижение элемента WayBillItem вверх
     @Subscribe("buttonUp")
     public void onButtonUpClick(Button.ClickEvent event) {
         if (itemsTable.getSingleSelected() != null){
@@ -353,6 +374,7 @@ public class WayBillEdit extends StandardEditor<WayBill> {
         }
     }
 
+    //передвижение элемента WayBillItem вниз
     @Subscribe("buttonDown")
     public void onButtonDownClick(Button.ClickEvent event) {
         if (itemsTable.getSingleSelected() != null){
@@ -370,9 +392,6 @@ public class WayBillEdit extends StandardEditor<WayBill> {
             itemsDc.setItems(mutableList);
         }
     }
-
-
-
 
 
 }

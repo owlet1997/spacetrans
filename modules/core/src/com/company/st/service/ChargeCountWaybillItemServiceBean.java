@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
-import java.util.Arrays;
 
 @Service(ChargeCountWaybillItemService.NAME)
 public class ChargeCountWaybillItemServiceBean implements ChargeCountWaybillItemService {
@@ -25,14 +24,19 @@ public class ChargeCountWaybillItemServiceBean implements ChargeCountWaybillItem
 
     @Override
     public double getTotalCharge(WayBill wayBill) {
-        double totalCharge = 0;
-        double charge = wayBill.getItems().stream().map(WayBillItem::getCharge).mapToDouble(e -> e.doubleValue()).sum();
-        CustomerGrade grade = wayBill.getShipper().getGrade();
-        double discount = dataManager.loadValue("select e.value from st_Discounts e where e.grade = :grade", BigDecimal.class)
-                .parameter("grade", grade.getId())
-                .one().doubleValue();
-        totalCharge = (charge * (100 - discount)) / 100;
-        return totalCharge;
+        try{
+            double totalCharge = 0;
+            double charge = wayBill.getItems().stream().map(WayBillItem::getCharge).mapToDouble(e -> e.doubleValue()).sum();
+            CustomerGrade grade = wayBill.getShipper().getGrade();
+            double discount = dataManager.loadValue("select e.value from st_Discounts e where e.grade = :grade", BigDecimal.class)
+                    .parameter("grade", grade.getId())
+                    .one().doubleValue();
+            totalCharge = (charge * (100 - discount)) / 100;
+            return totalCharge;
+        } catch (NullPointerException e){
+            log.error("List is empty", e);
+            return 0;
+        }
     }
 
 
