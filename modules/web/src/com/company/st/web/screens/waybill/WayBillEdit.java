@@ -174,7 +174,6 @@ public class WayBillEdit extends StandardEditor<WayBill> {
             Planet planet = event.getValue();
             SpacePort spacePort = dataManager.loadValue("select e from st_SpacePort e where e.isDefault = true and e.planet = :planet", SpacePort.class)
                     .parameter("planet", planet)
-                    .parameter("default", true)
                     .one();
             portPickerField.setValue(spacePort);
         } catch (IllegalStateException e){
