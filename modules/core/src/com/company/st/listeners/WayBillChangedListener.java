@@ -26,7 +26,6 @@ public class WayBillChangedListener {
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void beforeCommit(EntityChangedEvent<WayBill, UUID> event) {
         log.info(String.valueOf(event));
-
         if (event.getType().equals(EntityChangedEvent.Type.UPDATED)){
             AttributeChanges changes = event.getChanges();
 
@@ -34,9 +33,8 @@ public class WayBillChangedListener {
                 WayBill wayBill = txDataManager.load(event.getEntityId()).view("new-wayBill-view").one();
 
                 wayBill.setTotalCharge(chargeCountWaybillItemService.getTotalCharge(wayBill));
-
                 wayBill.setTotalWeight(chargeCountWaybillItemService.getTotalWeight(wayBill));
-
+                txDataManager.save(wayBill);
             }
         }
     }

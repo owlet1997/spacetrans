@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class SampleIntegrationTest {
 
@@ -49,7 +50,7 @@ public class SampleIntegrationTest {
         metadata = cont.metadata();
         persistence = cont.persistence();
         dataManager = AppBeans.get(DataManager.class);
-        chargeCountWaybillItemService = AppBeans.get(ChargeCountWaybillItemService.class);
+        chargeCountWaybillItemService = AppBeans.get("st_ChargeCountWaybillItemService");
     }
 
     @AfterAll
@@ -128,13 +129,15 @@ public class SampleIntegrationTest {
             Assertions.assertEquals(15, wayBill.getTotalWeight());
             Assertions.assertEquals(12.75, wayBill.getTotalCharge());
 
-            UUID uuid = wayBill.getId();
-
             wayBill = dataManager.reload(wayBill,"new-wayBill-view");
             List<WayBillItem> list = wayBill.getItems();
-            WayBillItem deleted = list.get(0);
-            dataManager.remove(deleted);
-            list.remove(0);
+
+            WayBillItem deletedItem = dataManager.load(WayBillItem.class)
+                            .query("select s from st_WayBillItem s where s.number = 1")
+                            .one();
+            list.remove(deletedItem);
+
+            dataManager.remove(deletedItem);
             wayBill.setItems(list);
             dataManager.commit(wayBill);
 
