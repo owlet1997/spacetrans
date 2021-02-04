@@ -5,8 +5,10 @@ import com.haulmont.cuba.core.entity.StandardEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
 @Table(name = "ST_DISCOUNTS")
@@ -20,7 +22,9 @@ public class Discounts extends StandardEntity {
 
     @NotNull
     @Column(name = "VALUE_", nullable = false, unique = true)
-    @Positive
+    @DecimalMin("0")
+    @DecimalMax("100")
+    @PositiveOrZero
     private BigDecimal value;
 
     public BigDecimal getValue() {

@@ -1,6 +1,8 @@
 package com.company.st.web.screens.waybillitem;
 
 import com.company.st.service.ChargeCountWaybillItemService;
+import com.haulmont.cuba.core.global.DataManager;
+import com.haulmont.cuba.gui.Notifications;
 import com.haulmont.cuba.gui.components.HasValue;
 import com.haulmont.cuba.gui.components.TextField;
 import com.haulmont.cuba.gui.components.TextInputField;
@@ -11,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @UiController("st_WayBillItem.edit")
 @UiDescriptor("way-bill-item-edit.xml")
@@ -34,11 +37,41 @@ public class WayBillItemEdit extends StandardEditor<WayBillItem> {
     @Inject
     private TextField<Integer> numberField;
 
+    @Inject
+    private DataManager dataManager;
+    @Inject
+    private TextField<String> nameField;
+    @Inject
+    private Notifications notifications;
+
+    @Subscribe
+    public void onBeforeCommitChanges(BeforeCommitChangesEvent event) {
+        try{
+            WayBillItem wayBillItem = dataManager.load(WayBillItem.class)
+                    .query("select c from st_WayBillItem c where c.name = :name")
+                    .parameter("name", nameField.getValue())
+                    .one();
+
+            event.preventCommit();
+            notifications.create(Notifications.NotificationType.ERROR).withCaption("Элемент накладной с таким именем уже существует!").show();
+        } catch (IllegalStateException e){
+            Optional<WayBillItem> item = getEditedEntity().getWayBill().getItems().stream().filter(s -> s.getName().equals(nameField.getValue())).findFirst();
+            if (item.isPresent()){
+                event.preventCommit();
+                notifications.create(Notifications.NotificationType.ERROR).withCaption("Элемент накладной с таким именем уже существует!").show();
+            } else {
+                notifications.create().withCaption("Элемент накладной успешно добавлен!").show();
+            }
+        }
+    }
+
     @Subscribe
     public void onInitEntity(InitEntityEvent<WayBillItem> event) {
         double[] arr = getArray();
         chargeField.setValue(BigDecimal.valueOf(chargeCountWaybillItemService.getChargeValue(arr)));
     }
+
+
 
     @Subscribe("nameField")
     public void onNameFieldTextChange(TextInputField.TextChangeEvent event) {
