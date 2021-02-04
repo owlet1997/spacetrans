@@ -29,6 +29,15 @@ public class SpacePortChangedListener implements
         if (entity.getMoon() != null && entity.getPlanet() != null){
             throw new ValidationException("You should choose only one object - planet or moon!");
         }
+        setDefaultPort(entity,entityManager);
+    }
+
+    @Override
+    public void onBeforeUpdate(SpacePort entity, EntityManager entityManager) {
+        setDefaultPort(entity,entityManager);
+    }
+
+    private void setDefaultPort(SpacePort entity, EntityManager entityManager){
         if (entity.getIsDefault()){
             if (entity.getPlanet() != null) {
                 List<SpacePort> spacePortList = (List<SpacePort>) entityManager.createQuery(
@@ -54,12 +63,6 @@ public class SpacePortChangedListener implements
                     }
                 }
             }
-
         }
-    }
-
-    @Override
-    public void onBeforeUpdate(SpacePort entity, EntityManager entityManager) {
-
     }
 }

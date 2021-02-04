@@ -6,12 +6,10 @@ import com.haulmont.chile.core.annotations.NamePattern;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.text.DecimalFormat;
-import java.text.ParseException;
 
 @Table(name = "ST_PLANET")
 @Entity(name = "st_Planet")
-@NamePattern("%s|version")
+@NamePattern("%s|name")
 public class Planet extends AstronomicalBody {
     private static final long serialVersionUID = -5479335096032671490L;
 

@@ -2,8 +2,8 @@
 <menu-config xmlns="http://schemas.haulmont.com/cuba/menu.xsd">
     <menu id="application-st" insertBefore="administration" caption="mainMsg://menu_config.application-st">
         <item screen="st_Planet.browse" caption="mainMsg://menu_config.st_Planet.browse"/>
-        <item screen="st_AtmosphericGas.browse" caption="mainMsg://menu_config.st_AtmosphericGas.browse"/>
-        <item screen="st_Atmosphere.browse" caption="mainMsg://menu_config.st_Atmosphere.browse"/>
+<!--        <item screen="st_AtmosphericGas.browse" caption="mainMsg://menu_config.st_AtmosphericGas.browse"/>-->
+<!--        <item screen="st_Atmosphere.browse" caption="mainMsg://menu_config.st_Atmosphere.browse"/>-->
         <item screen="st_Gas.browse" caption="mainMsg://menu_config.st_Gas.browse"/>
         <item screen="st_Moon.browse" caption="mainMsg://menu_config.st_Moon.browse"/>
         <item screen="st_Individual.browse" caption="mainMsg://menu_config.st_Individual.browse"/>
@@ -11,8 +11,8 @@
         <item screen="st_SpacePort.browse" caption="mainMsg://menu_config.st_SpacePort.browse"/>
         <item screen="st_Discounts.browse" caption="mainMsg://menu_config.st_Discounts.browse"/>
         <item screen="st_WayBill.browse" caption="mainMsg://menu_config.st_WayBill.browse"/>
-        <item screen="st_WayBillItem.browse" caption="mainMsg://menu_config.st_WayBillItem.browse"/>
-        <item screen="st_Customer.browse" caption="mainMsg://menu_config.st_Customer.browse"/>
+<!--        <item screen="st_WayBillItem.browse" caption="mainMsg://menu_config.st_WayBillItem.browse"/>-->
+<!--        <item screen="st_Customer.browse" caption="mainMsg://menu_config.st_Customer.browse"/>-->
         <item screen="st_Carrier.browse" caption="mainMsg://menu_config.st_Carrier.browse"/>
     </menu>
 </menu-config>
