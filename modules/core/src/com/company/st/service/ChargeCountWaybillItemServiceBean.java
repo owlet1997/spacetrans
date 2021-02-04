@@ -36,6 +36,9 @@ public class ChargeCountWaybillItemServiceBean implements ChargeCountWaybillItem
         } catch (NullPointerException e){
             log.error("List is empty", e);
             return 0;
+        } catch (IllegalStateException e){
+            log.error("There is no value from this grade");
+            return wayBill.getItems().stream().map(WayBillItem::getCharge).mapToDouble(s -> s.doubleValue()).sum();
         }
     }
 
