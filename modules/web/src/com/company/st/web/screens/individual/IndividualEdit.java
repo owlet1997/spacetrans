@@ -8,6 +8,7 @@ import com.haulmont.cuba.gui.screen.*;
 import com.company.st.entity.customer.Individual;
 
 import javax.inject.Inject;
+import java.util.Optional;
 
 @UiController("st_Individual.edit")
 @UiDescriptor("individual-edit.xml")
@@ -20,18 +21,26 @@ public class IndividualEdit extends StandardEditor<Individual> {
     private TextField<String> nameField;
     @Inject
     private Notifications notifications;
+    @Inject
+    private TextField<String> emailField;
 
     @Subscribe
     public void onBeforeCommitChanges(BeforeCommitChangesEvent event) {
-        try{
-            Customer customer = dataManager.load(Customer.class)
+            Optional<Customer> customer = dataManager.load(Customer.class)
                     .query("select c from st_Customer c where c.name = :name")
                     .parameter("name", nameField.getValue())
-                    .one();
-            event.preventCommit();
-            notifications.create(Notifications.NotificationType.ERROR).withCaption("Пользователь с таким именем уже зарегистрирован!").show();
-        } catch (IllegalStateException e){
-            notifications.create().withCaption("Данное имя не занято!").show();
-        }
+                    .optional();
+            if (customer.isPresent()){
+                event.preventCommit();
+                notifications.create(Notifications.NotificationType.ERROR).withCaption("Пользователь с таким именем уже зарегистрирован!").show();
+            }
+            Optional<Customer> customer1 = dataManager.load(Customer.class)
+                    .query("select c from st_Customer c where c.email = :email")
+                    .parameter("email", emailField.getValue())
+                    .optional();
+            if (customer1.isPresent()){
+                event.preventCommit();
+                notifications.create(Notifications.NotificationType.ERROR).withCaption("Пользователь с таким email уже зарегистрирован!").show();
+            }
     }
 }
