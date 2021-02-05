@@ -18,7 +18,7 @@ import com.haulmont.cuba.security.role.SpecificPermissionsContainer;
 public class SimpleUserRole extends AnnotatedRoleDefinition {
     public final static String NAME = "SimpleUser";
 
-    @ScreenAccess(screenIds = {"st_Planet.browse", "application-st", "st_AtmosphericGas.browse", "st_Atmosphere.browse", "st_Gas.browse", "st_Moon.browse", "sys$FileDescriptor.browse", "administration"})
+    @ScreenAccess(screenIds = {"st_Planet.browse", "application-st", "st_AtmosphericGas.browse", "st_Atmosphere.browse", "st_Gas.browse", "st_Moon.browse", "administration", "st_Atmosphere.edit", "st_AtmosphericGas.edit", "st_Gas.edit", "st_Moon.edit", "st_Planet.edit"})
     @Override
     public ScreenPermissionsContainer screenPermissions() {
         return super.screenPermissions();
