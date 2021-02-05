@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @UiController("st_WayBillItem.edit")
@@ -55,13 +56,18 @@ public class WayBillItemEdit extends StandardEditor<WayBillItem> {
             event.preventCommit();
             notifications.create(Notifications.NotificationType.ERROR).withCaption("Элемент накладной с таким именем уже существует!").show();
         } catch (IllegalStateException e){
-            Optional<WayBillItem> item = getEditedEntity().getWayBill().getItems().stream().filter(s -> s.getName().equals(nameField.getValue())).findFirst();
-            if (item.isPresent()){
-                event.preventCommit();
-                notifications.create(Notifications.NotificationType.ERROR).withCaption("Элемент накладной с таким именем уже существует!").show();
-            } else {
-                notifications.create().withCaption("Элемент накладной успешно добавлен!").show();
+            Optional<List<WayBillItem>> list = Optional.ofNullable(getEditedEntity().getWayBill().getItems());
+            if (list.isPresent()){
+                Optional<WayBillItem> item = list.get().stream().filter(s -> s.getName().equals(nameField.getValue())).findFirst();
+                if (item.isPresent()){
+                    event.preventCommit();
+                    notifications.create(Notifications.NotificationType.ERROR).withCaption("Элемент накладной с таким именем уже существует!").show();
+                } else {
+                    notifications.create().withCaption("Элемент накладной успешно добавлен!").show();
+                }
             }
+
+
         }
     }
 
